@@ -178,68 +178,92 @@
     </div>
 
     <script>
-        // SUPABASE CONFIGURATION (Keys Injected Successfully)
-        const SUPABASE_URL = "https://mndqlkeqmkezbudmzqfl.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uZHFsa2VxbWtlemJ1ZG16cWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNTcwNzMsImV4cCI6MjA5NjgzMzA3M30.WhBsQCT8fMw-eAUwsthQAMtxOdhDzbZvPSTHgVjy2IQ";
-        
-        let supabase;
-        try {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } catch (err) {
-            console.error("Supabase load failed:", err);
+        // SUPABASE CONFIGURATION
+const SUPABASE_URL = "https://mndqlkeqmkezbudmzqfl.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uZHFsa2VxbWtlemJ1ZG16cWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNTcwNzMsImV4cCI6MjA5NjgzMzA3M30.WhBsQCT8fMw-eAUwsthQAMtxOdhDzbZvPSTHgVjy2IQ";
+
+let supabase;
+
+// Check if library loaded correctly
+try {
+    if (window.supabase) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log("Supabase connected successfully!");
+    } else {
+        alert("Bhai, Supabase library internet se load nahi ho paayi. Page reload karo!");
+    }
+} catch (err) {
+    alert("Initialization Error: " + err.message);
+}
+
+// Form toggle logic
+function toggleForms() {
+    document.getElementById('login-form').classList.toggle('hidden');
+    document.getElementById('signup-form').classList.toggle('hidden');
+}
+
+// REAL SIGN UP FUNCTION
+async function handleSignUp() {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+
+    if(!email || !password) {
+        alert("Bhai, email aur password dono fill karo!");
+        return;
+    }
+
+    if(password.length < 6) {
+        alert("Bhai, password kam se kam 6 characters ka hona chahiye!");
+        return;
+    }
+
+    try {
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            alert("Supabase Error: " + error.message);
+        } else if (data.user && data.user.identities && data.user.identities.length === 0) {
+            alert("Bhai, yeh email pehle se registered hai! Sign In karne ka try karo.");
+        } else {
+            alert("🎉 Success! Email verification link bhej diya gaya hai. Apna Inbox aur SPAM folder check karo!");
+            toggleForms();
         }
+    } catch (catchErr) {
+        alert("System Error: " + catchErr.message);
+    }
+}
 
-        // Form toggle logic
-        function toggleForms() {
-            document.getElementById('login-form').classList.toggle('hidden');
-            document.getElementById('signup-form').classList.toggle('hidden');
+// REAL LOGIN FUNCTION
+async function handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    if(!email || !password) {
+        alert("Bhai, email aur password dono daalo!");
+        return;
+    }
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            alert("Login Failed: " + error.message);
+        } else {
+            alert("Login Successful! Dashboard par chalte hain...");
+            window.location.href = "dashboard.html";
         }
+    } catch (catchErr) {
+        alert("System Error: " + catchErr.message);
+    }
+}
 
-        // REAL SIGN UP FUNCTION
-        async function handleSignUp() {
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
 
-            if(!email || !password) {
-                alert("Bhai, email aur password dono fill karo!");
-                return;
-            }
-
-            const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-            });
-
-            if (error) {
-                alert("Error: " + error.message);
-            } else {
-                alert("🎉 Registration Successful! Bhai, apna Email Inbox/Spam check karo aur verification link par click karo!");
-                toggleForms();
-            }
-        }
-
-        // REAL LOGIN FUNCTION
-        async function handleLogin() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            if(!email || !password) {
-                alert("Bhai, email aur password dono daalo!");
-                return;
-            }
-
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password,
-            });
-
-            if (error) {
-                alert("Login Failed: " + error.message);
-            } else {
-                // Verification successful hone par hi dashboard par bhejega
-                window.location.href = "dashboard.html";
-            }
-        }
     </script>
 </body>
 </html>
