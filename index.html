@@ -1,261 +1,2935 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliMarkets Lab - Pre-News Market Sentiment Engine</title>
-    
-    <meta name="description" content="Master Forex, Gold, and Crypto trading with IntelliMarkets Lab. Analyze high-impact economic news events like CPI, FOMC, and NFP before they hit the market using our advanced data engine.">
-    <meta name="keywords" content="IntelliMarkets Lab, intellimarkets, pre-news trading, forex news sentiment, CPI gold prediction, FOMC market effect, high impact news filter, trading data engine, market sentiment analysis">
-    <meta name="author" content="IntelliMarkets Lab">
-    <meta name="robots" content="index, follow">
+  <!-- ============================================================
+       IntelliMarkets Lab — Pre-News Market Sentiment Engine
+       Production-ready single-page application
+       ============================================================ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IntelliMarkets Lab — Pre-News Market Sentiment Engine</title>
 
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="IntelliMarkets Lab - Pre-News Market Sentiment Engine">
-    <meta property="og:description" content="Stop guessing the news impact. Filter high-impact data and get precision pre-news sentiment analysis instantly.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200&auto=format&fit=crop">
+  <!-- SEO: Core Meta Tags -->
+  <meta name="description" content="IntelliMarkets Lab is a professional pre-news market sentiment engine for Forex, Gold, and Crypto traders. Analyze high-impact economic events like CPI, FOMC, and NFP before they drop." />
+  <meta name="keywords" content="forex trading, pre-news analysis, market sentiment, economic calendar, CPI analysis, FOMC, NFP, gold trading, crypto trading, bullish bearish forecast, economic news filter" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="IntelliMarkets Lab" />
+  <link rel="canonical" href="https://intellimarketslab.com/" />
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <!-- Open Graph (Facebook / LinkedIn) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="IntelliMarkets Lab" />
+  <meta property="og:title" content="IntelliMarkets Lab — Pre-News Market Sentiment Engine" />
+  <meta property="og:description" content="Filter and analyze high-impact economic events before they drop. Built for Forex, Gold, and Crypto traders who need an edge." />
+  <meta property="og:image" content="https://intellimarketslab.com/og-preview.png" />
+  <meta property="og:url" content="https://intellimarketslab.com/" />
 
-        body {
-            background: radial-gradient(circle at center, #1e1e2f 0%, #0f0f16 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #ffffff;
-            overflow: hidden;
-        }
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@IntelliMarketsLab" />
+  <meta name="twitter:title" content="IntelliMarkets Lab — Pre-News Market Sentiment Engine" />
+  <meta name="twitter:description" content="Filter and analyze high-impact economic events before they drop. Built for Forex, Gold, and Crypto traders." />
+  <meta name="twitter:image" content="https://intellimarketslab.com/og-preview.png" />
 
-        .container {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 16px;
-            width: 400px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
+  <!-- Supabase JS Client via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            color: #00ffcc;
-            text-transform: uppercase;
-        }
+  <!-- Google Fonts: Space Grotesk (display) + Inter (body) + JetBrains Mono (data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
-        .subtitle {
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 30px;
-        }
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — Single source of truth
+       ============================================================ */
+    :root {
+      /* Backgrounds */
+      --bg-void:        #080b10;
+      --bg-base:        #0d1117;
+      --bg-surface:     #111820;
+      --bg-elevated:    #161e28;
+      --bg-glass:       rgba(22, 30, 40, 0.85);
 
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
+      /* Neon accents */
+      --neon-primary:   #00ffcc;
+      --neon-glow:      rgba(0, 255, 204, 0.18);
+      --neon-glow-strong: rgba(0, 255, 204, 0.35);
+      --neon-blue:      #00b4ff;
+      --neon-gold:      #ffcc00;
 
-        label {
-            display: block;
-            font-size: 12px;
-            color: #00ffcc;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+      /* Semantic colors */
+      --bull-color:     #00e676;
+      --bull-bg:        rgba(0, 230, 118, 0.08);
+      --bear-color:     #ff3d5a;
+      --bear-bg:        rgba(255, 61, 90, 0.08);
+      --neutral-color:  #ffcc00;
+      --neutral-bg:     rgba(255, 204, 0, 0.08);
 
-        input {
-            width: 100%;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-            transition: 0.3s;
-        }
+      /* Impact tags */
+      --high-color:     #ff3d5a;
+      --high-bg:        rgba(255, 61, 90, 0.12);
+      --medium-color:   #ffcc00;
+      --medium-bg:      rgba(255, 204, 0, 0.12);
+      --low-color:      #00e676;
+      --low-bg:         rgba(0, 230, 118, 0.12);
 
-        input:focus {
-            border-color: #00ffcc;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
-        }
+      /* Text hierarchy */
+      --text-primary:   #e8edf5;
+      --text-secondary: #8896a8;
+      --text-muted:     #4a5a6a;
+      --text-accent:    #00ffcc;
 
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: #00ffcc;
-            border: none;
-            border-radius: 8px;
-            color: #0f0f16;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
+      /* Borders */
+      --border-default: rgba(255, 255, 255, 0.06);
+      --border-accent:  rgba(0, 255, 204, 0.25);
+      --border-strong:  rgba(0, 255, 204, 0.5);
 
-        .btn:hover {
-            background: #00ccaa;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
-        }
+      /* Typography */
+      --font-display:   'Space Grotesk', sans-serif;
+      --font-body:      'Inter', sans-serif;
+      --font-mono:      'JetBrains Mono', monospace;
 
-        .toggle-text {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #aaa;
-        }
+      /* Spacing scale */
+      --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
+      --sp-5: 20px;  --sp-6: 24px;  --sp-8: 32px;  --sp-10: 40px;
+      --sp-12: 48px; --sp-16: 64px;
 
-        .link-span {
-            color: #00ffcc;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: underline;
-            margin-left: 5px;
-        }
+      /* Radii */
+      --r-sm:  6px;
+      --r-md:  10px;
+      --r-lg:  16px;
+      --r-xl:  24px;
 
-        .link-span:hover {
-            color: #00ccaa;
-        }
+      /* Transitions */
+      --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --t-fast:  150ms;
+      --t-mid:   280ms;
+      --t-slow:  480ms;
+    }
 
-        .hidden-block {
-            display: none !important;
-        }
-    </style>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background-color: var(--bg-void);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img, svg { display: block; max-width: 100%; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    input, select { font-family: inherit; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    /* Focus ring — accessibility */
+    :focus-visible {
+      outline: 2px solid var(--neon-primary);
+      outline-offset: 3px;
+      border-radius: var(--r-sm);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ============================================================
+       SCANLINE OVERLAY — ambient cyberpunk texture
+       ============================================================ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.03) 2px,
+        rgba(0, 0, 0, 0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ============================================================
+       AMBIENT GRID BACKGROUND
+       ============================================================ */
+    .ambient-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 255, 204, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 204, 0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================================
+       APP SHELL — view management
+       ============================================================ */
+    #app {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* View visibility control — no layout shift */
+    .view {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity var(--t-slow) var(--ease-smooth),
+                  transform var(--t-slow) var(--ease-smooth);
+    }
+
+    .view.active {
+      display: flex;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .view.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       AUTH VIEW — login / signup
+       ============================================================ */
+    #auth-view {
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: var(--sp-6);
+    }
+
+    /* Auth background glow */
+    #auth-view::before {
+      content: '';
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0, 255, 204, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+    }
+
+    /* Brand header */
+    .auth-brand {
+      text-align: center;
+      margin-bottom: var(--sp-10);
+    }
+
+    .auth-brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-3);
+      margin-bottom: var(--sp-4);
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--bg-elevated), var(--bg-surface));
+      border: 1px solid var(--border-accent);
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px var(--neon-glow), inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .brand-icon svg {
+      color: var(--neon-primary);
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .brand-name span {
+      color: var(--neon-primary);
+    }
+
+    .auth-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Auth card */
+    .auth-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-xl);
+      padding: var(--sp-10) var(--sp-8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top accent line on card */
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-primary), transparent);
+    }
+
+    .auth-card-header {
+      margin-bottom: var(--sp-8);
+    }
+
+    .auth-card-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: var(--sp-1);
+    }
+
+    .auth-card-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Tab switcher */
+    .auth-tabs {
+      display: flex;
+      background: var(--bg-base);
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-md);
+      padding: 3px;
+      margin-bottom: var(--sp-8);
+      gap: 3px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: var(--sp-2) var(--sp-4);
+      border-radius: calc(var(--r-md) - 2px);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color var(--t-mid), background var(--t-mid), box-shadow var(--t-mid);
+      text-align: center;
+    }
+
+    .auth-tab.active {
+      background: var(--bg-elevated);
+      color: var(--neon-primary);
+      box-shadow: 0 0 12px rgba(0, 255, 204, 0.12);
+    }
+
+    .auth-tab:hover:not(.active) {
+      color: var(--text-primary);
+    }
+
+    /* Form panels */
+    .auth-panel {
+      display: none;
+      flex-direction: column;
+      gap: var(--sp-5);
+    }
+
+    .auth-panel.active {
+      display: flex;
+    }
+
+    /* Form fields */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .field-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.04em;
+    }
+
+    .field-input-wrap {
+      position: relative;
+    }
+
+    .field-input-wrap svg {
+      position: absolute;
+      left: var(--sp-4);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      transition: color var(--t-fast);
+      pointer-events: none;
+    }
+
+    .field-input {
+      width: 100%;
+      background: var(--bg-base);
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-md);
+      padding: var(--sp-3) var(--sp-4) var(--sp-3) 44px;
+      color: var(--text-primary);
+      font-size: 0.9375rem;
+      transition: border-color var(--t-mid), box-shadow var(--t-mid), background var(--t-mid);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .field-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .field-input:focus {
+      outline: none;
+      border-color: var(--border-strong);
+      background: var(--bg-surface);
+      box-shadow: 0 0 0 3px var(--neon-glow);
+    }
+
+    .field-input:focus + svg,
+    .field-input-wrap:focus-within svg {
+      color: var(--neon-primary);
+    }
+
+    /* Fix icon layering */
+    .field-input-wrap .field-input { padding-left: 44px; }
+    .field-input-wrap svg { z-index: 1; }
+
+    /* Error message */
+    .auth-error {
+      display: none;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-4);
+      background: rgba(255, 61, 90, 0.08);
+      border: 1px solid rgba(255, 61, 90, 0.2);
+      border-radius: var(--r-md);
+      font-size: 0.8125rem;
+      color: var(--bear-color);
+    }
+
+    .auth-error.visible { display: flex; }
+
+    .auth-success {
+      display: none;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-4);
+      background: rgba(0, 230, 118, 0.08);
+      border: 1px solid rgba(0, 230, 118, 0.2);
+      border-radius: var(--r-md);
+      font-size: 0.8125rem;
+      color: var(--bull-color);
+    }
+
+    .auth-success.visible { display: flex; }
+
+    /* Primary CTA button */
+    .btn-primary {
+      width: 100%;
+      padding: var(--sp-4);
+      background: var(--neon-primary);
+      color: var(--bg-void);
+      font-family: var(--font-display);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border-radius: var(--r-md);
+      letter-spacing: 0.01em;
+      transition: background var(--t-fast), transform var(--t-fast), box-shadow var(--t-mid);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+      opacity: 0;
+      transition: opacity var(--t-fast);
+    }
+
+    .btn-primary:hover::after { opacity: 1; }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 24px rgba(0, 255, 204, 0.45), 0 4px 16px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 0 12px rgba(0, 255, 204, 0.25);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-primary.loading {
+      color: transparent;
+      pointer-events: none;
+    }
+
+    .btn-primary.loading::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 2px solid rgba(0,0,0,0.3);
+      border-top-color: rgba(0,0,0,0.8);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Auth footer link */
+    .auth-footer {
+      margin-top: var(--sp-6);
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Demo credentials hint */
+    .demo-hint {
+      margin-top: var(--sp-4);
+      padding: var(--sp-3) var(--sp-4);
+      background: var(--neon-glow);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--r-md);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .demo-hint strong {
+      color: var(--neon-primary);
+    }
+
+    /* ============================================================
+       DASHBOARD VIEW
+       ============================================================ */
+    #dashboard-view {
+      min-height: 100vh;
+    }
+
+    /* Topbar */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 60px;
+      background: rgba(8, 11, 16, 0.92);
+      border-bottom: 1px solid var(--border-default);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--sp-6);
+      gap: var(--sp-6);
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      flex-shrink: 0;
+    }
+
+    .topbar-brand .brand-icon {
+      width: 34px;
+      height: 34px;
+    }
+
+    .topbar-brand .brand-name {
+      font-size: 1.125rem;
+    }
+
+    /* Live ticker */
+    .topbar-ticker {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-8);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ticker-item .symbol {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .ticker-item .price-up { color: var(--bull-color); }
+    .ticker-item .price-down { color: var(--bear-color); }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      flex-shrink: 0;
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-1) var(--sp-3);
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid rgba(0, 230, 118, 0.2);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--bull-color);
+      letter-spacing: 0.06em;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--bull-color);
+      border-radius: 50%;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.75); }
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--neon-primary), var(--neon-blue));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--bg-void);
+      cursor: pointer;
+      transition: box-shadow var(--t-mid);
+    }
+
+    .user-avatar:hover {
+      box-shadow: 0 0 16px var(--neon-glow-strong);
+    }
+
+    .btn-signout {
+      padding: var(--sp-2) var(--sp-4);
+      background: transparent;
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-sm);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: border-color var(--t-fast), color var(--t-fast), background var(--t-fast);
+    }
+
+    .btn-signout:hover {
+      border-color: var(--bear-color);
+      color: var(--bear-color);
+      background: var(--bear-bg);
+    }
+
+    /* Main layout */
+    .dashboard-main {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      grid-template-rows: auto 1fr;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* ============================================================
+       SIDEBAR
+       ============================================================ */
+    .sidebar {
+      grid-row: 1 / -1;
+      border-right: 1px solid var(--border-default);
+      background: var(--bg-base);
+      padding: var(--sp-6) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-6);
+    }
+
+    .sidebar-section {
+      padding: 0 var(--sp-5);
+    }
+
+    .sidebar-section-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: var(--sp-3);
+      padding-left: var(--sp-3);
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-1);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: var(--sp-3);
+      border-radius: var(--r-md);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background var(--t-fast), color var(--t-fast);
+      position: relative;
+    }
+
+    .nav-item svg {
+      flex-shrink: 0;
+      opacity: 0.6;
+      transition: opacity var(--t-fast);
+    }
+
+    .nav-item:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .nav-item:hover svg { opacity: 1; }
+
+    .nav-item.active {
+      background: var(--neon-glow);
+      color: var(--neon-primary);
+      border: 1px solid var(--border-accent);
+    }
+
+    .nav-item.active svg { opacity: 1; }
+
+    .nav-badge {
+      margin-left: auto;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 var(--sp-2);
+      background: rgba(255, 61, 90, 0.15);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--high-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Filter panel in sidebar */
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .filter-chip {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: var(--sp-2) var(--sp-3);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: background var(--t-fast);
+      user-select: none;
+    }
+
+    .filter-chip:hover { background: var(--bg-elevated); }
+
+    .filter-chip input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--border-default);
+      border-radius: 4px;
+      background: var(--bg-base);
+      cursor: pointer;
+      transition: background var(--t-fast), border-color var(--t-fast);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .filter-chip input[type="checkbox"]:checked {
+      background: var(--neon-primary);
+      border-color: var(--neon-primary);
+    }
+
+    .filter-chip input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 1.5px;
+      width: 5px;
+      height: 9px;
+      border: 2px solid var(--bg-void);
+      border-top: none;
+      border-left: none;
+      transform: rotate(40deg);
+    }
+
+    .filter-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .filter-label {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    .filter-count {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .filter-dot.high     { background: var(--high-color); }
+    .filter-dot.medium   { background: var(--medium-color); }
+    .filter-dot.low      { background: var(--low-color); }
+
+    /* Market toggles */
+    .market-toggle-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-2);
+    }
+
+    .market-toggle {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: var(--sp-2) var(--sp-3);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: background var(--t-fast);
+      user-select: none;
+    }
+
+    .market-toggle:hover { background: var(--bg-elevated); }
+
+    .market-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--r-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+
+    .market-toggle-label {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    /* Toggle switch */
+    .toggle-switch {
+      position: relative;
+      width: 32px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: 100px;
+      cursor: pointer;
+      transition: background var(--t-mid), border-color var(--t-mid);
+    }
+
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 12px;
+      height: 12px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: transform var(--t-mid) var(--ease-spring), background var(--t-mid);
+    }
+
+    .toggle-switch input:checked + .toggle-track {
+      background: var(--neon-glow-strong);
+      border-color: var(--border-strong);
+    }
+
+    .toggle-switch input:checked + .toggle-track::after {
+      transform: translateX(14px);
+      background: var(--neon-primary);
+    }
+
+    /* Divider */
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border-default);
+      margin: 0 var(--sp-5);
+    }
+
+    /* ============================================================
+       MAIN CONTENT AREA
+       ============================================================ */
+    .content-area {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-base);
+      overflow: hidden;
+    }
+
+    /* Content header */
+    .content-header {
+      padding: var(--sp-6) var(--sp-8);
+      border-bottom: 1px solid var(--border-default);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--sp-6);
+    }
+
+    .content-header-left h1 {
+      font-family: var(--font-display);
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      margin-bottom: var(--sp-1);
+    }
+
+    .content-header-left p {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    .content-header-left p span {
+      color: var(--neon-primary);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    /* Stats strip */
+    .stats-strip {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-6);
+    }
+
+    .stat-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1px;
+    }
+
+    .stat-pill .val {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .stat-pill .lbl {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 32px;
+      background: var(--border-default);
+    }
+
+    /* ============================================================
+       EVENT CARDS FEED
+       ============================================================ */
+    .events-feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--sp-6) var(--sp-8);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-4);
+    }
+
+    /* Custom scrollbar */
+    .events-feed::-webkit-scrollbar { width: 5px; }
+    .events-feed::-webkit-scrollbar-track { background: transparent; }
+    .events-feed::-webkit-scrollbar-thumb {
+      background: var(--bg-elevated);
+      border-radius: 10px;
+    }
+    .events-feed::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 255, 204, 0.2);
+    }
+
+    /* Date separator */
+    .date-separator {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-3) 0 var(--sp-2);
+    }
+
+    .date-separator span {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .date-separator::before,
+    .date-separator::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-default);
+    }
+
+    /* Event card */
+    .event-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      transition: border-color var(--t-mid), box-shadow var(--t-mid), transform var(--t-mid);
+      cursor: pointer;
+    }
+
+    .event-card:hover {
+      border-color: var(--border-accent);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 255, 204, 0.06);
+      transform: translateY(-1px);
+    }
+
+    .event-card.expanded {
+      border-color: var(--border-accent);
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 255, 204, 0.1);
+    }
+
+    .event-card-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-5) var(--sp-6);
+    }
+
+    /* Time column */
+    .event-time {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 52px;
+    }
+
+    .event-time .time {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .event-time .timezone {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* Event info */
+    .event-info {
+      min-width: 0;
+    }
+
+    .event-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-bottom: var(--sp-1);
+    }
+
+    .event-country-flag {
+      font-size: 0.875rem;
+      line-height: 1;
+    }
+
+    .event-country {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .event-separator {
+      width: 3px;
+      height: 3px;
+      background: var(--text-muted);
+      border-radius: 50%;
+    }
+
+    .event-name {
+      font-family: var(--font-display);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Impact badge */
+    .impact-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 3px var(--sp-3);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .impact-badge::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .impact-badge.high   { background: var(--high-bg);   color: var(--high-color);   border: 1px solid rgba(255,61,90,0.2); }
+    .impact-badge.medium { background: var(--medium-bg); color: var(--medium-color); border: 1px solid rgba(255,204,0,0.2); }
+    .impact-badge.low    { background: var(--low-bg);    color: var(--low-color);    border: 1px solid rgba(0,230,118,0.2); }
+
+    /* Forecast summary in header */
+    .forecast-summary {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      flex-shrink: 0;
+    }
+
+    .forecast-tag {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-1);
+      padding: 3px var(--sp-3);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .forecast-tag.bullish { background: var(--bull-bg); color: var(--bull-color); border: 1px solid rgba(0,230,118,0.2); }
+    .forecast-tag.bearish { background: var(--bear-bg); color: var(--bear-color); border: 1px solid rgba(255,61,90,0.2); }
+    .forecast-tag.neutral { background: var(--neutral-bg); color: var(--neutral-color); border: 1px solid rgba(255,204,0,0.2); }
+
+    /* Expand arrow */
+    .expand-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border-default);
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      flex-shrink: 0;
+      transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast), transform var(--t-mid);
+    }
+
+    .event-card:hover .expand-toggle {
+      border-color: var(--border-accent);
+      color: var(--neon-primary);
+    }
+
+    .event-card.expanded .expand-toggle {
+      transform: rotate(180deg);
+      background: var(--neon-glow);
+      border-color: var(--border-accent);
+      color: var(--neon-primary);
+    }
+
+    /* Previous data strip */
+    .event-data-strip {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-8);
+      padding: 0 var(--sp-6) var(--sp-4);
+    }
+
+    .data-point {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .data-point .dp-label {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .data-point .dp-value {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .data-point .dp-value.positive { color: var(--bull-color); }
+    .data-point .dp-value.negative { color: var(--bear-color); }
+
+    /* Scenario analysis panel */
+    .event-analysis {
+      display: none;
+      padding: 0 var(--sp-6) var(--sp-6);
+      flex-direction: column;
+      gap: var(--sp-5);
+    }
+
+    .event-card.expanded .event-analysis {
+      display: flex;
+      animation: slideDown var(--t-mid) var(--ease-smooth) forwards;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .analysis-divider {
+      height: 1px;
+      background: var(--border-default);
+      margin-bottom: var(--sp-1);
+    }
+
+    .analysis-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: var(--sp-4);
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-4);
+    }
+
+    /* Scenario box */
+    .scenario-box {
+      border-radius: var(--r-md);
+      padding: var(--sp-5);
+      border: 1px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scenario-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+    }
+
+    .scenario-box.bullish {
+      background: var(--bull-bg);
+      border-color: rgba(0, 230, 118, 0.15);
+    }
+
+    .scenario-box.bullish::before {
+      background: linear-gradient(90deg, transparent, var(--bull-color), transparent);
+    }
+
+    .scenario-box.bearish {
+      background: var(--bear-bg);
+      border-color: rgba(255, 61, 90, 0.15);
+    }
+
+    .scenario-box.bearish::before {
+      background: linear-gradient(90deg, transparent, var(--bear-color), transparent);
+    }
+
+    .scenario-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-bottom: var(--sp-3);
+    }
+
+    .scenario-icon {
+      font-size: 1rem;
+    }
+
+    .scenario-label {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .scenario-box.bullish .scenario-label { color: var(--bull-color); }
+    .scenario-box.bearish .scenario-label { color: var(--bear-color); }
+
+    .scenario-condition {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--sp-2);
+    }
+
+    .scenario-detail {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: var(--sp-3);
+    }
+
+    .scenario-pairs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sp-2);
+    }
+
+    .pair-chip {
+      padding: 2px var(--sp-2);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-sm);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+    }
+
+    /* Probability bar */
+    .prob-bar-wrap {
+      margin-top: var(--sp-3);
+    }
+
+    .prob-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-bottom: var(--sp-2);
+    }
+
+    .prob-bar-track {
+      height: 4px;
+      background: var(--bg-elevated);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .prob-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.8s var(--ease-smooth);
+    }
+
+    .scenario-box.bullish .prob-bar-fill { background: var(--bull-color); }
+    .scenario-box.bearish .prob-bar-fill { background: var(--bear-color); }
+
+    /* Third neutral scenario */
+    .scenario-neutral {
+      grid-column: 1 / -1;
+      background: var(--neutral-bg);
+      border: 1px solid rgba(255, 204, 0, 0.15);
+      border-radius: var(--r-md);
+      padding: var(--sp-4);
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+    }
+
+    .scenario-neutral::before {
+      content: '';
+      position: absolute;
+      /* no top line for neutral */
+    }
+
+    .neutral-icon { font-size: 1.25rem; }
+
+    .neutral-text {
+      flex: 1;
+    }
+
+    .neutral-text .lbl {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--neutral-color);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: var(--sp-1);
+    }
+
+    .neutral-text .val {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* ============================================================
+       TOAST NOTIFICATIONS
+       ============================================================ */
+    .toast-container {
+      position: fixed;
+      bottom: var(--sp-6);
+      right: var(--sp-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
+      padding: var(--sp-4) var(--sp-5);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--r-lg);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      min-width: 280px;
+      max-width: 380px;
+      pointer-events: auto;
+      animation: toastIn 0.3s var(--ease-spring) forwards;
+      backdrop-filter: blur(12px);
+    }
+
+    .toast.removing {
+      animation: toastOut 0.25s var(--ease-smooth) forwards;
+    }
+
+    .toast.success { border-left: 3px solid var(--bull-color); }
+    .toast.error   { border-left: 3px solid var(--bear-color); }
+    .toast.info    { border-left: 3px solid var(--neon-primary); }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateY(8px) scale(0.95); }
+    }
+
+    /* ============================================================
+       EMPTY STATE
+       ============================================================ */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sp-16);
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 2.5rem;
+      margin-bottom: var(--sp-4);
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: var(--sp-2);
+    }
+
+    .empty-state p {
+      font-size: 0.8125rem;
+    }
+
+    /* ============================================================
+       MOBILE HAMBURGER / SIDEBAR OVERLAY
+       ============================================================ */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 200;
+      backdrop-filter: blur(4px);
+    }
+
+    .menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      transition: color var(--t-fast), border-color var(--t-fast);
+    }
+
+    .menu-toggle:hover {
+      color: var(--neon-primary);
+      border-color: var(--border-accent);
+    }
+
+    /* ============================================================
+       SCROLLBAR for events feed
+       ============================================================ */
+    * { scrollbar-width: thin; scrollbar-color: var(--bg-elevated) transparent; }
+
+    /* ============================================================
+       RESPONSIVE — Tablet
+       ============================================================ */
+    @media (max-width: 1024px) {
+      .topbar-ticker { display: none; }
+
+      .dashboard-main {
+        grid-template-columns: 220px 1fr;
+      }
+
+      .stats-strip { display: none; }
+
+      .scenario-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .scenario-neutral { grid-column: 1; }
+    }
+
+    /* ============================================================
+       RESPONSIVE — Mobile
+       ============================================================ */
+    @media (max-width: 768px) {
+      .menu-toggle { display: flex; }
+
+      .dashboard-main {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 60px;
+        bottom: 0;
+        width: 280px;
+        z-index: 300;
+        transform: translateX(-100%);
+        transition: transform var(--t-mid) var(--ease-smooth);
+        padding-bottom: var(--sp-10);
+        overflow-y: auto;
+      }
+
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-overlay { display: block; }
+      .sidebar-overlay.hidden { display: none; }
+
+      .content-header {
+        padding: var(--sp-5) var(--sp-5);
+        flex-direction: column;
+        gap: var(--sp-4);
+      }
+
+      .events-feed {
+        padding: var(--sp-4) var(--sp-4);
+      }
+
+      .event-card-header {
+        grid-template-columns: auto 1fr auto;
+        gap: var(--sp-3);
+        padding: var(--sp-4);
+      }
+
+      /* Stack forecast below name on mobile */
+      .forecast-summary {
+        display: none;
+      }
+
+      .event-data-strip {
+        padding: 0 var(--sp-4) var(--sp-3);
+        gap: var(--sp-5);
+      }
+
+      .event-analysis {
+        padding: 0 var(--sp-4) var(--sp-4);
+      }
+
+      .topbar {
+        padding: 0 var(--sp-4);
+      }
+
+      .btn-signout { display: none; }
+
+      .auth-card {
+        padding: var(--sp-8) var(--sp-6);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .scenario-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .event-data-strip {
+        flex-wrap: wrap;
+        gap: var(--sp-4) var(--sp-5);
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <h1 style="display:none;">IntelliMarkets Lab - Best Pre-News Trading Sentiment Engine</h1>
+<!-- Ambient grid texture -->
+<div class="ambient-grid" aria-hidden="true"></div>
 
-    <div class="container">
-        <div class="logo">IntelliMarkets Lab</div>
-        <div class="subtitle">Pre-News Market Sentiment Engine</div>
+<!-- ============================================================
+     APP ROOT
+     ============================================================ -->
+<div id="app">
 
-        <div id="login-form">
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="login-email" placeholder="Enter your email address">
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="login-password" placeholder="••••••••">
-            </div>
-            <button class="btn" onclick="handleLogin()">Sign In</button>
-            <div class="toggle-text">
-                New trader? <span class="link-span" onclick="showSignupForm()">Create an Account</span>
-            </div>
+  <!-- ============================================================
+       AUTH VIEW
+       ============================================================ -->
+  <section id="auth-view" class="view" role="main" aria-label="Authentication">
+    <div class="auth-container">
+      <!-- Brand -->
+      <div class="auth-brand">
+        <div class="auth-brand-logo">
+          <div class="brand-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+              <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+          </div>
+          <span class="brand-name">Intelli<span>Markets</span> Lab</span>
+        </div>
+        <p class="auth-subtitle">Pre-News Market Sentiment Engine</p>
+      </div>
+
+      <!-- Auth card -->
+      <div class="auth-card">
+        <!-- Tab switcher -->
+        <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+          <button class="auth-tab active" id="tab-signin" role="tab" aria-selected="true" aria-controls="panel-signin" onclick="switchAuthTab('signin')">Sign In</button>
+          <button class="auth-tab" id="tab-signup" role="tab" aria-selected="false" aria-controls="panel-signup" onclick="switchAuthTab('signup')">Sign Up</button>
         </div>
 
-        <div id="signup-form" class="hidden-block">
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="signup-email" placeholder="username@example.com">
-            </div>
-            <div class="form-group">
-                <label>Create Password</label>
-                <input type="password" id="signup-password" placeholder="Minimum 6 characters">
-            </div>
-            <button class="btn" onclick="handleSignUp()">Register & Verify</button>
-            <div class="toggle-text">
-                Already have an account? <span class="link-span" onclick="showLoginForm()">Sign In</span>
-            </div>
+        <!-- Error / success banners -->
+        <div class="auth-error" id="auth-error" role="alert" aria-live="polite">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="auth-error-text">An error occurred. Please try again.</span>
         </div>
+
+        <div class="auth-success" id="auth-success" role="status" aria-live="polite">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="auth-success-text">Account created. Check your email to confirm.</span>
+        </div>
+
+        <!-- Sign In panel -->
+        <div class="auth-panel active" id="panel-signin" role="tabpanel" aria-labelledby="tab-signin">
+          <div class="field-group">
+            <label class="field-label" for="signin-email">Email Address</label>
+            <div class="field-input-wrap">
+              <input class="field-input" type="email" id="signin-email" name="email" placeholder="trader@example.com" autocomplete="email" required />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="signin-password">Password</label>
+            <div class="field-input-wrap">
+              <input class="field-input" type="password" id="signin-password" name="password" placeholder="Your secure password" autocomplete="current-password" required />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+          </div>
+
+          <button class="btn-primary" id="btn-signin" type="button" onclick="handleSignIn()">
+            Access Dashboard
+          </button>
+
+          <div class="demo-hint">
+            <strong>Demo mode:</strong> Supabase is configured below.<br />
+            Replace credentials in the config block to activate live auth.
+          </div>
+        </div>
+
+        <!-- Sign Up panel -->
+        <div class="auth-panel" id="panel-signup" role="tabpanel" aria-labelledby="tab-signup">
+          <div class="field-group">
+            <label class="field-label" for="signup-name">Full Name</label>
+            <div class="field-input-wrap">
+              <input class="field-input" type="text" id="signup-name" name="name" placeholder="Your full name" autocomplete="name" required />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="signup-email">Email Address</label>
+            <div class="field-input-wrap">
+              <input class="field-input" type="email" id="signup-email" name="email" placeholder="trader@example.com" autocomplete="email" required />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="signup-password">Password</label>
+            <div class="field-input-wrap">
+              <input class="field-input" type="password" id="signup-password" name="password" placeholder="Minimum 8 characters" autocomplete="new-password" required minlength="8" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="signup-market">Primary Market</label>
+            <div class="field-input-wrap">
+              <select class="field-input" id="signup-market" name="market" style="padding-left: 44px;">
+                <option value="">Select your primary market</option>
+                <option value="forex">Forex (FX)</option>
+                <option value="gold">Gold (XAU/USD)</option>
+                <option value="crypto">Cryptocurrency</option>
+                <option value="indices">Indices</option>
+              </select>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+          </div>
+
+          <button class="btn-primary" id="btn-signup" type="button" onclick="handleSignUp()">
+            Create Free Account
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer note -->
+      <p class="auth-footer">
+        By continuing, you agree to our Terms of Service and Privacy Policy.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       DASHBOARD VIEW
+       ============================================================ -->
+  <section id="dashboard-view" class="view" role="main" aria-label="Dashboard">
+
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" onclick="toggleSidebar()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+
+      <div class="topbar-brand">
+        <div class="brand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" color="var(--neon-primary)">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+        </div>
+        <span class="brand-name">Intelli<span>Markets</span> Lab</span>
+      </div>
+
+      <div class="topbar-ticker" aria-label="Live market data" role="marquee">
+        <div class="ticker-item"><span class="symbol">EUR/USD</span><span class="price-up">1.0847 ▲</span></div>
+        <div class="ticker-item"><span class="symbol">GBP/USD</span><span class="price-down">1.2634 ▼</span></div>
+        <div class="ticker-item"><span class="symbol">XAU/USD</span><span class="price-up">2,341.80 ▲</span></div>
+        <div class="ticker-item"><span class="symbol">BTC/USD</span><span class="price-up">67,420 ▲</span></div>
+        <div class="ticker-item"><span class="symbol">USD/JPY</span><span class="price-down">157.32 ▼</span></div>
+        <div class="ticker-item"><span class="symbol">ETH/USD</span><span class="price-up">3,580 ▲</span></div>
+        <div class="ticker-item"><span class="symbol">USD/CHF</span><span class="price-down">0.9012 ▼</span></div>
+        <div class="ticker-item"><span class="symbol">DXY</span><span class="price-up">104.78 ▲</span></div>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="live-badge" aria-label="Live data active">
+          <span class="live-dot" aria-hidden="true"></span>
+          LIVE
+        </div>
+        <div class="user-menu">
+          <div class="user-avatar" id="user-avatar" title="User profile" aria-label="User avatar">--</div>
+          <button class="btn-signout" id="btn-signout" onclick="handleSignOut()" aria-label="Sign out">Sign Out</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar overlay (mobile) -->
+    <div class="sidebar-overlay hidden" id="sidebar-overlay" onclick="closeSidebar()" aria-hidden="true"></div>
+
+    <div class="dashboard-main">
+      <!-- Sidebar -->
+      <nav class="sidebar" id="sidebar" role="navigation" aria-label="Dashboard navigation">
+
+        <!-- Main nav -->
+        <div class="sidebar-section">
+          <p class="sidebar-section-label">Navigation</p>
+          <ul class="nav-list">
+            <li>
+              <div class="nav-item active" role="button" tabindex="0" aria-current="page">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Event Calendar
+                <span class="nav-badge">3</span>
+              </div>
+            </li>
+            <li>
+              <div class="nav-item" role="button" tabindex="0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                Sentiment Scanner
+              </div>
+            </li>
+            <li>
+              <div class="nav-item" role="button" tabindex="0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                Historical Analysis
+              </div>
+            </li>
+            <li>
+              <div class="nav-item" role="button" tabindex="0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                News Feed
+              </div>
+            </li>
+            <li>
+              <div class="nav-item" role="button" tabindex="0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+                Alert System
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Impact filter -->
+        <div class="sidebar-section">
+          <p class="sidebar-section-label">Impact Filter</p>
+          <div class="filter-group" id="impact-filter-group">
+            <label class="filter-chip">
+              <input type="checkbox" id="filter-high" value="high" checked onchange="applyFilters()" />
+              <span class="filter-dot high" aria-hidden="true"></span>
+              <span class="filter-label">High Impact</span>
+              <span class="filter-count" id="count-high">0</span>
+            </label>
+            <label class="filter-chip">
+              <input type="checkbox" id="filter-medium" value="medium" checked onchange="applyFilters()" />
+              <span class="filter-dot medium" aria-hidden="true"></span>
+              <span class="filter-label">Medium Impact</span>
+              <span class="filter-count" id="count-medium">0</span>
+            </label>
+            <label class="filter-chip">
+              <input type="checkbox" id="filter-low" value="low" checked onchange="applyFilters()" />
+              <span class="filter-dot low" aria-hidden="true"></span>
+              <span class="filter-label">Low Impact</span>
+              <span class="filter-count" id="count-low">0</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Market filter -->
+        <div class="sidebar-section">
+          <p class="sidebar-section-label">Markets</p>
+          <div class="market-toggle-group">
+            <label class="market-toggle">
+              <span class="market-icon" style="background: rgba(0,180,255,0.1); color: var(--neon-blue);">💱</span>
+              <span class="market-toggle-label">Forex</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="market-forex" checked onchange="applyFilters()" aria-label="Toggle Forex" />
+                <span class="toggle-track"></span>
+              </label>
+            </label>
+            <label class="market-toggle">
+              <span class="market-icon" style="background: rgba(255,204,0,0.1); color: var(--neon-gold);">🥇</span>
+              <span class="market-toggle-label">Gold</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="market-gold" checked onchange="applyFilters()" aria-label="Toggle Gold" />
+                <span class="toggle-track"></span>
+              </label>
+            </label>
+            <label class="market-toggle">
+              <span class="market-icon" style="background: rgba(0,255,204,0.1); color: var(--neon-primary);">₿</span>
+              <span class="market-toggle-label">Crypto</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="market-crypto" checked onchange="applyFilters()" aria-label="Toggle Crypto" />
+                <span class="toggle-track"></span>
+              </label>
+            </label>
+          </div>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <!-- Settings -->
+        <div class="sidebar-section">
+          <p class="sidebar-section-label">Settings</p>
+          <ul class="nav-list">
+            <li>
+              <div class="nav-item" role="button" tabindex="0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+                Preferences
+              </div>
+            </li>
+            <li>
+              <div class="nav-item" role="button" tabindex="0" onclick="handleSignOut()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Sign Out
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Content area -->
+      <main class="content-area" id="content-area">
+        <!-- Header -->
+        <div class="content-header">
+          <div class="content-header-left">
+            <h1>Economic Event Calendar</h1>
+            <p>Pre-news sentiment analysis &mdash; <span id="current-date-label">Loading...</span></p>
+          </div>
+          <div class="stats-strip" aria-label="Event statistics">
+            <div class="stat-pill">
+              <span class="val" id="stat-total">—</span>
+              <span class="lbl">Total Events</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-pill">
+              <span class="val" style="color: var(--high-color);" id="stat-high">—</span>
+              <span class="lbl">High Impact</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-pill">
+              <span class="val" style="color: var(--bull-color);" id="stat-bullish">—</span>
+              <span class="lbl">Bullish Bias</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Events feed -->
+        <div class="events-feed" id="events-feed" role="list" aria-label="Economic events">
+          <!-- Rendered by JS -->
+        </div>
+      </main>
+    </div>
+  </section>
+
+</div><!-- /#app -->
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container" role="region" aria-live="polite" aria-label="Notifications"></div>
+
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+"use strict";
+
+/* ============================================================
+   SUPABASE CONFIGURATION
+   Replace these values with your own project credentials.
+   ============================================================ */
+const SUPABASE_CONFIG = {
+  url: 'https://YOUR_PROJECT_ID.supabase.co',
+  anonKey: 'YOUR_ANON_PUBLIC_KEY'
+};
+
+/* ============================================================
+   SUPABASE CLIENT INITIALIZATION
+   ============================================================ */
+let supabaseClient = null;
+
+function initSupabase() {
+  try {
+    if (
+      SUPABASE_CONFIG.url.includes('YOUR_PROJECT_ID') ||
+      SUPABASE_CONFIG.anonKey.includes('YOUR_ANON_PUBLIC_KEY')
+    ) {
+      console.warn('[IntelliMarkets Lab] Supabase credentials are not configured. Running in demo mode.');
+      return false;
+    }
+    supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+    console.info('[IntelliMarkets Lab] Supabase client initialized successfully.');
+    return true;
+  } catch (err) {
+    console.error('[IntelliMarkets Lab] Failed to initialize Supabase client:', err);
+    return false;
+  }
+}
+
+/* ============================================================
+   APPLICATION STATE
+   ============================================================ */
+const AppState = {
+  currentUser: null,
+  isDemoMode: true,
+  activeFilters: {
+    impact: ['high', 'medium', 'low'],
+    markets: ['forex', 'gold', 'crypto']
+  },
+  allEvents: []
+};
+
+/* ============================================================
+   ECONOMIC EVENT DATA (Demo / Seed Data)
+   In production, this would be fetched from your Supabase table.
+   ============================================================ */
+const ECONOMIC_EVENTS = [
+  {
+    id: 'cpi-us-001',
+    date: 'TODAY',
+    time: '08:30',
+    timezone: 'EST',
+    country: 'US',
+    flag: '🇺🇸',
+    name: 'CPI (Consumer Price Index) m/m',
+    impact: 'high',
+    markets: ['forex', 'gold', 'crypto'],
+    previous: '+0.3%',
+    forecast: '+0.2%',
+    actual: null,
+    previousSign: 'positive',
+    forecastSign: 'neutral',
+    bullishScenario: {
+      condition: 'CPI prints below forecast (< +0.2%)',
+      detail: 'A softer-than-expected inflation reading reduces Fed rate-hike pressure, triggering USD weakness. Risk-on assets and commodities gain momentum.',
+      pairs: ['EUR/USD ↑', 'GBP/USD ↑', 'AUD/USD ↑', 'XAU/USD ↑', 'BTC ↑'],
+      probability: 42
+    },
+    bearishScenario: {
+      condition: 'CPI prints above forecast (> +0.2%)',
+      detail: 'Hotter inflation reinforces Fed hawkishness, strengthening the USD sharply. Gold and risk assets face heavy selling pressure.',
+      pairs: ['USD/JPY ↑', 'USD/CHF ↑', 'XAU/USD ↓', 'BTC ↓'],
+      probability: 38
+    },
+    neutralNote: 'If CPI aligns exactly at +0.2% with no revision to previous, expect initial whipsaw followed by a range-bound session pending Fed member commentary.'
+  },
+  {
+    id: 'fomc-001',
+    date: 'TODAY',
+    time: '14:00',
+    timezone: 'EST',
+    country: 'US',
+    flag: '🇺🇸',
+    name: 'FOMC Meeting Minutes',
+    impact: 'high',
+    markets: ['forex', 'gold', 'crypto'],
+    previous: 'Hawkish',
+    forecast: 'Neutral',
+    actual: null,
+    previousSign: 'neutral',
+    forecastSign: 'neutral',
+    bullishScenario: {
+      condition: 'Minutes signal dovish pivot or rate cut hints',
+      detail: 'Any language suggesting the Fed is nearing its rate ceiling or considering cuts sparks a broad dollar sell-off and ignites rallies across gold and crypto.',
+      pairs: ['EUR/USD ↑', 'XAU/USD ↑', 'BTC ↑', 'ETH ↑', 'DXY ↓'],
+      probability: 35
+    },
+    bearishScenario: {
+      condition: 'Minutes reinforce "higher for longer" narrative',
+      detail: 'Continued hawkish messaging suppresses risk appetite. Gold remains under pressure, dollar strengthens across the board, crypto sentiment turns negative.',
+      pairs: ['USD/JPY ↑', 'DXY ↑', 'XAU/USD ↓', 'BTC ↓', 'S&P 500 ↓'],
+      probability: 52
+    },
+    neutralNote: 'A mixed minutes print with no clear directional bias may lead to short-term volatility with no sustained trend until the next key data point.'
+  },
+  {
+    id: 'gdp-uk-001',
+    date: 'TODAY',
+    time: '04:30',
+    timezone: 'GMT',
+    country: 'UK',
+    flag: '🇬🇧',
+    name: 'GDP (Gross Domestic Product) q/q',
+    impact: 'high',
+    markets: ['forex'],
+    previous: '+0.1%',
+    forecast: '+0.3%',
+    actual: null,
+    previousSign: 'positive',
+    forecastSign: 'positive',
+    bullishScenario: {
+      condition: 'GDP beats forecast (> +0.3%)',
+      detail: 'Stronger UK economic growth increases BOE rate expectations. GBP surges as investors price in a more restrictive monetary policy path.',
+      pairs: ['GBP/USD ↑', 'GBP/JPY ↑', 'EUR/GBP ↓'],
+      probability: 48
+    },
+    bearishScenario: {
+      condition: 'GDP misses or comes in flat / negative',
+      detail: 'Weaker-than-expected growth cements BOE dovish bias. GBP/USD breaks key support levels. Cross pairs GBP/JPY face amplified selling.',
+      pairs: ['GBP/USD ↓', 'GBP/JPY ↓', 'EUR/GBP ↑'],
+      probability: 35
+    },
+    neutralNote: 'An in-line print near +0.3% is likely to see a muted reaction unless accompanied by strong commentary from BOE officials about future policy direction.'
+  },
+  {
+    id: 'ppi-us-001',
+    date: 'TOMORROW',
+    time: '08:30',
+    timezone: 'EST',
+    country: 'US',
+    flag: '🇺🇸',
+    name: 'PPI (Producer Price Index) m/m',
+    impact: 'medium',
+    markets: ['forex', 'gold'],
+    previous: '+0.2%',
+    forecast: '+0.1%',
+    actual: null,
+    previousSign: 'positive',
+    forecastSign: 'positive',
+    bullishScenario: {
+      condition: 'PPI prints below consensus, confirming disinflation trend',
+      detail: 'Lower producer prices support the narrative that consumer inflation will continue to cool, giving the Fed cover to ease. Gold benefits as real yields drop.',
+      pairs: ['XAU/USD ↑', 'EUR/USD ↑', 'GBP/USD ↑'],
+      probability: 45
+    },
+    bearishScenario: {
+      condition: 'PPI surprises to the upside',
+      detail: 'Rising input costs signal that inflation may re-accelerate. USD strengthens, gold retreats, and rate-sensitive assets reprice higher yields.',
+      pairs: ['USD/JPY ↑', 'DXY ↑', 'XAU/USD ↓'],
+      probability: 30
+    },
+    neutralNote: 'PPI is a leading indicator for CPI. In-line results would confirm current expectations and likely produce minimal market movement.'
+  },
+  {
+    id: 'jobless-us-001',
+    date: 'TOMORROW',
+    time: '08:30',
+    timezone: 'EST',
+    country: 'US',
+    flag: '🇺🇸',
+    name: 'Initial Jobless Claims',
+    impact: 'medium',
+    markets: ['forex'],
+    previous: '222K',
+    forecast: '218K',
+    actual: null,
+    previousSign: 'neutral',
+    forecastSign: 'neutral',
+    bullishScenario: {
+      condition: 'Claims come in above 225K (labor market softening)',
+      detail: 'Higher jobless claims suggest weakening employment conditions, increasing expectations for Fed rate cuts. Dollar weakens broadly.',
+      pairs: ['EUR/USD ↑', 'AUD/USD ↑', 'NZD/USD ↑'],
+      probability: 30
+    },
+    bearishScenario: {
+      condition: 'Claims print below 215K (labor market remains tight)',
+      detail: 'A strong labor market gives the Fed less incentive to cut rates. USD demand increases as rate-cut expectations are pushed further out.',
+      pairs: ['USD/JPY ↑', 'USD/CAD ↑', 'DXY ↑'],
+      probability: 38
+    },
+    neutralNote: 'Weekly jobless claims can be volatile due to seasonal adjustments. The 4-week moving average is a more reliable indicator than any single reading.'
+  },
+  {
+    id: 'rba-rate-001',
+    date: 'TOMORROW',
+    time: '00:30',
+    timezone: 'AEST',
+    country: 'AU',
+    flag: '🇦🇺',
+    name: 'RBA Interest Rate Decision',
+    impact: 'high',
+    markets: ['forex'],
+    previous: '4.35%',
+    forecast: '4.35% (Hold)',
+    actual: null,
+    previousSign: 'neutral',
+    forecastSign: 'neutral',
+    bullishScenario: {
+      condition: 'RBA surprises with hike or signals further tightening',
+      detail: 'An unexpected rate increase or hawkish statement sharply boosts AUD. Carry traders rush to the currency as yield differentials widen.',
+      pairs: ['AUD/USD ↑', 'AUD/JPY ↑', 'AUD/NZD ↑'],
+      probability: 12
+    },
+    bearishScenario: {
+      condition: 'RBA signals a rate cut or adopts a dovish tone',
+      detail: 'Any hint of a pivot toward easing crushes AUD. The market is positioned for a hold, so a dovish statement carries asymmetric downside risk.',
+      pairs: ['AUD/USD ↓', 'AUD/JPY ↓'],
+      probability: 25
+    },
+    neutralNote: 'A straightforward hold with language unchanged from the prior statement is the base case. AUD could drift slightly lower as the event premium unwinds.'
+  },
+  {
+    id: 'retail-sales-us-001',
+    date: 'THIS WEEK',
+    time: '08:30',
+    timezone: 'EST',
+    country: 'US',
+    flag: '🇺🇸',
+    name: 'Retail Sales m/m',
+    impact: 'medium',
+    markets: ['forex', 'crypto'],
+    previous: '+0.6%',
+    forecast: '+0.3%',
+    actual: null,
+    previousSign: 'positive',
+    forecastSign: 'positive',
+    bullishScenario: {
+      condition: 'Retail sales beat forecast (> +0.3%)',
+      detail: 'Strong consumer spending data supports the "soft landing" narrative for the US economy. USD firms and equity-correlated assets like crypto may also benefit.',
+      pairs: ['USD/JPY ↑', 'USD/CHF ↑', 'BTC ↑'],
+      probability: 40
+    },
+    bearishScenario: {
+      condition: 'Retail sales print negative or significantly below forecast',
+      detail: 'Weak consumer spending raises recession fears, triggering risk-off sentiment. Gold acts as a safe haven while risk assets fall.',
+      pairs: ['XAU/USD ↑', 'JPY ↑', 'EUR/USD ↓'],
+      probability: 28
+    },
+    neutralNote: 'Retail sales are notoriously revised heavily. The initial reaction may reverse within 30 minutes if revisions to the prior month are significant.'
+  },
+  {
+    id: 'nfp-001',
+    date: 'THIS WEEK',
+    time: '08:30',
+    timezone: 'EST',
+    country: 'US',
+    flag: '🇺🇸',
+    name: 'Non-Farm Payrolls (NFP)',
+    impact: 'high',
+    markets: ['forex', 'gold', 'crypto'],
+    previous: '275K',
+    forecast: '240K',
+    actual: null,
+    previousSign: 'positive',
+    forecastSign: 'positive',
+    bullishScenario: {
+      condition: 'NFP > 260K with wages above forecast',
+      detail: 'A strong jobs report with wage growth signals sustained consumer spending and inflation risk. USD rallies aggressively. Gold struggles under the pressure of higher expected rates.',
+      pairs: ['USD/JPY ↑', 'DXY ↑', 'USD/CHF ↑', 'XAU/USD ↓'],
+      probability: 38
+    },
+    bearishScenario: {
+      condition: 'NFP < 200K or significant wage miss',
+      detail: 'A labor market cooling substantially below the threshold that the Fed monitors gives clear justification for imminent rate cuts. Dollar collapses, gold surges.',
+      pairs: ['EUR/USD ↑', 'XAU/USD ↑', 'BTC ↑', 'AUD/USD ↑'],
+      probability: 32
+    },
+    neutralNote: 'NFP is the single most market-moving monthly release. The unemployment rate and average hourly earnings are equally critical. All three figures must be evaluated together.'
+  }
+];
+
+/* ============================================================
+   VIEW MANAGEMENT
+   ============================================================ */
+function showView(viewId) {
+  // Hide all views first
+  document.querySelectorAll('.view').forEach(view => {
+    view.classList.remove('active', 'visible');
+    view.style.display = 'none';
+  });
+
+  const target = document.getElementById(viewId);
+  if (!target) {
+    console.error(`[IntelliMarkets Lab] View not found: ${viewId}`);
+    return;
+  }
+
+  // Show the target view
+  target.style.display = 'flex';
+  target.classList.add('active');
+
+  // Trigger animation on next frame
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      target.classList.add('visible');
+    });
+  });
+}
+
+/* ============================================================
+   AUTH TAB SWITCHING
+   ============================================================ */
+function switchAuthTab(tab) {
+  // Update tabs
+  document.querySelectorAll('.auth-tab').forEach(btn => {
+    btn.classList.remove('active');
+    btn.setAttribute('aria-selected', 'false');
+  });
+
+  document.querySelectorAll('.auth-panel').forEach(panel => {
+    panel.classList.remove('active');
+  });
+
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.getElementById(`tab-${tab}`).setAttribute('aria-selected', 'true');
+  document.getElementById(`panel-${tab}`).classList.add('active');
+
+  // Clear messages
+  hideAuthMessages();
+}
+
+function showAuthError(message) {
+  const el = document.getElementById('auth-error');
+  const textEl = document.getElementById('auth-error-text');
+  textEl.textContent = message;
+  el.classList.add('visible');
+  document.getElementById('auth-success').classList.remove('visible');
+}
+
+function showAuthSuccess(message) {
+  const el = document.getElementById('auth-success');
+  const textEl = document.getElementById('auth-success-text');
+  textEl.textContent = message;
+  el.classList.add('visible');
+  document.getElementById('auth-error').classList.remove('visible');
+}
+
+function hideAuthMessages() {
+  document.getElementById('auth-error').classList.remove('visible');
+  document.getElementById('auth-success').classList.remove('visible');
+}
+
+/* ============================================================
+   AUTH HANDLERS
+   ============================================================ */
+async function handleSignIn() {
+  const email = document.getElementById('signin-email').value.trim();
+  const password = document.getElementById('signin-password').value;
+  const btn = document.getElementById('btn-signin');
+
+  hideAuthMessages();
+
+  // Basic validation
+  if (!email || !password) {
+    showAuthError('Please enter your email address and password to continue.');
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    showAuthError('Please enter a valid email address.');
+    return;
+  }
+
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  try {
+    if (AppState.isDemoMode) {
+      // Demo mode: simulate a successful sign-in
+      await simulateDelay(900);
+      enterDashboard({ email, name: extractNameFromEmail(email) });
+      return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+    if (error) throw error;
+
+    console.info('[IntelliMarkets Lab] Sign-in successful for user:', data.user.email);
+    enterDashboard({ email: data.user.email, name: data.user.user_metadata?.full_name || extractNameFromEmail(data.user.email) });
+
+  } catch (err) {
+    console.error('[IntelliMarkets Lab] Sign-in error:', err);
+    showAuthError(err.message || 'Sign-in failed. Please check your credentials and try again.');
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+async function handleSignUp() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const btn = document.getElementById('btn-signup');
+
+  hideAuthMessages();
+
+  // Validation
+  if (!name || !email || !password) {
+    showAuthError('All fields are required. Please complete the form to create your account.');
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    showAuthError('Please enter a valid email address.');
+    return;
+  }
+
+  if (password.length < 8) {
+    showAuthError('Password must be at least 8 characters long.');
+    return;
+  }
+
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  try {
+    if (AppState.isDemoMode) {
+      // Demo mode: simulate account creation
+      await simulateDelay(1100);
+      showAuthSuccess('Account created successfully. You can now sign in with your credentials.');
+      switchAuthTab('signin');
+      document.getElementById('signin-email').value = email;
+      return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: name } }
+    });
+
+    if (error) throw error;
+
+    console.info('[IntelliMarkets Lab] Sign-up initiated for:', email);
+    showAuthSuccess('Account created. Check your email inbox to verify your address before signing in.');
+
+  } catch (err) {
+    console.error('[IntelliMarkets Lab] Sign-up error:', err);
+    showAuthError(err.message || 'Account creation failed. Please try again.');
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+async function handleSignOut() {
+  try {
+    if (!AppState.isDemoMode && supabaseClient) {
+      await supabaseClient.auth.signOut();
+    }
+    console.info('[IntelliMarkets Lab] User signed out.');
+  } catch (err) {
+    console.error('[IntelliMarkets Lab] Sign-out error:', err);
+  } finally {
+    AppState.currentUser = null;
+    showView('auth-view');
+    showToast('You have been signed out successfully.', 'info');
+  }
+}
+
+/* ============================================================
+   DASHBOARD INITIALIZATION
+   ============================================================ */
+function enterDashboard(user) {
+  AppState.currentUser = user;
+
+  // Set user avatar initials
+  const initials = user.name
+    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : user.email.slice(0, 2).toUpperCase();
+
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-avatar').title = user.name || user.email;
+
+  // Set date label
+  const now = new Date();
+  const dateLabel = now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  document.getElementById('current-date-label').textContent = dateLabel;
+
+  // Load event data
+  AppState.allEvents = ECONOMIC_EVENTS;
+  updateFilterCounts();
+  renderEvents(AppState.allEvents);
+  updateStats(AppState.allEvents);
+
+  // Transition to dashboard
+  showView('dashboard-view');
+  showToast(`Welcome back, ${user.name || user.email.split('@')[0]}. Markets are active.`, 'success');
+
+  console.info('[IntelliMarkets Lab] Dashboard loaded for user:', user.email);
+}
+
+/* ============================================================
+   EVENT RENDERING
+   ============================================================ */
+function renderEvents(events) {
+  const feed = document.getElementById('events-feed');
+  feed.innerHTML = '';
+
+  if (events.length === 0) {
+    feed.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <h3>No events match your current filters</h3>
+        <p>Adjust the impact level or market filters in the sidebar to see more events.</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Group events by date
+  const grouped = {};
+  events.forEach(event => {
+    if (!grouped[event.date]) grouped[event.date] = [];
+    grouped[event.date].push(event);
+  });
+
+  Object.entries(grouped).forEach(([dateLabel, dateEvents]) => {
+    // Date separator
+    const separator = document.createElement('div');
+    separator.className = 'date-separator';
+    separator.innerHTML = `<span>${formatDateLabel(dateLabel)}</span>`;
+    feed.appendChild(separator);
+
+    // Events for this date
+    dateEvents.forEach(event => {
+      const card = createEventCard(event);
+      feed.appendChild(card);
+    });
+  });
+}
+
+function createEventCard(event) {
+  const card = document.createElement('article');
+  card.className = 'event-card';
+  card.setAttribute('role', 'listitem');
+  card.setAttribute('aria-label', `${event.name} — ${event.impact} impact`);
+  card.dataset.eventId = event.id;
+
+  const bullishClass = event.bullishScenario.probability > event.bearishScenario.probability ? 'bullish' : '';
+  const bearishClass = event.bearishScenario.probability > event.bullishScenario.probability ? 'bearish' : '';
+  const dominantBias = bullishClass || bearishClass || 'neutral';
+
+  card.innerHTML = `
+    <div class="event-card-header" onclick="toggleEventCard('${event.id}')">
+      <div class="event-time">
+        <span class="time">${event.time}</span>
+        <span class="timezone">${event.timezone}</span>
+      </div>
+
+      <div class="event-info">
+        <div class="event-meta">
+          <span class="event-country-flag" aria-label="${event.country} flag">${event.flag}</span>
+          <span class="event-country">${event.country}</span>
+          <span class="event-separator" aria-hidden="true"></span>
+          <span class="impact-badge ${event.impact}" aria-label="${event.impact} impact">${event.impact}</span>
+        </div>
+        <div class="event-name">${event.name}</div>
+      </div>
+
+      <div class="forecast-summary">
+        <span class="forecast-tag ${dominantBias}">
+          ${dominantBias === 'bullish' ? '▲ Bullish' : dominantBias === 'bearish' ? '▼ Bearish' : '◆ Neutral'}
+        </span>
+      </div>
+
+      <button class="expand-toggle" aria-expanded="false" aria-label="Expand scenario analysis" tabindex="-1">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
     </div>
 
-    <script>
-        const SUPABASE_URL = "https://mndqlkeqmkezbudmzqfl.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uZHFsa2VxbWtlemJ1ZG16cWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNTcwNzMsImV4cCI6MjA5NjgzMzA3M30.WhBsQCT8fMw-eAUwsthQAMtxOdhDzbZvPSTHgVjy2IQ";
-        
-        let supabaseClient;
-        try {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log("Supabase Connection Successfully Established.");
-        } catch (err) {
-            console.error("Initialization Error: " + err.message);
-        }
+    <div class="event-data-strip">
+      <div class="data-point">
+        <span class="dp-label">Previous</span>
+        <span class="dp-value ${event.previousSign}">${event.previous}</span>
+      </div>
+      <div class="data-point">
+        <span class="dp-label">Forecast</span>
+        <span class="dp-value">${event.forecast}</span>
+      </div>
+      <div class="data-point">
+        <span class="dp-label">Actual</span>
+        <span class="dp-value" style="color: var(--text-muted);">${event.actual || '—'}</span>
+      </div>
+      <div class="data-point">
+        <span class="dp-label">Bull %</span>
+        <span class="dp-value positive">${event.bullishScenario.probability}%</span>
+      </div>
+      <div class="data-point">
+        <span class="dp-label">Bear %</span>
+        <span class="dp-value negative">${event.bearishScenario.probability}%</span>
+      </div>
+    </div>
 
-        // View Toggling Controls
-        function showSignupForm() {
-            document.getElementById('login-form').classList.add('hidden-block');
-            document.getElementById('signup-form').classList.remove('hidden-block');
-        }
+    <div class="event-analysis">
+      <div class="analysis-divider"></div>
+      <p class="analysis-title">Pre-Event Scenario Analysis</p>
 
-        function showLoginForm() {
-            document.getElementById('signup-form').classList.add('hidden-block');
-            document.getElementById('login-form').classList.remove('hidden-block');
-        }
+      <div class="scenario-grid">
+        <!-- Bullish Scenario -->
+        <div class="scenario-box bullish">
+          <div class="scenario-header">
+            <span class="scenario-icon">▲</span>
+            <span class="scenario-label">Bullish Scenario</span>
+          </div>
+          <p class="scenario-condition">${event.bullishScenario.condition}</p>
+          <p class="scenario-detail">${event.bullishScenario.detail}</p>
+          <div class="scenario-pairs">
+            ${event.bullishScenario.pairs.map(p => `<span class="pair-chip">${p}</span>`).join('')}
+          </div>
+          <div class="prob-bar-wrap">
+            <div class="prob-bar-label">
+              <span>Probability</span>
+              <span>${event.bullishScenario.probability}%</span>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-fill" style="width: ${event.bullishScenario.probability}%"></div>
+            </div>
+          </div>
+        </div>
 
-        // Authentication: Sign Up Process
-        async function handleSignUp() {
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
+        <!-- Bearish Scenario -->
+        <div class="scenario-box bearish">
+          <div class="scenario-header">
+            <span class="scenario-icon">▼</span>
+            <span class="scenario-label">Bearish Scenario</span>
+          </div>
+          <p class="scenario-condition">${event.bearishScenario.condition}</p>
+          <p class="scenario-detail">${event.bearishScenario.detail}</p>
+          <div class="scenario-pairs">
+            ${event.bearishScenario.pairs.map(p => `<span class="pair-chip">${p}</span>`).join('')}
+          </div>
+          <div class="prob-bar-wrap">
+            <div class="prob-bar-label">
+              <span>Probability</span>
+              <span>${event.bearishScenario.probability}%</span>
+            </div>
+            <div class="prob-bar-track">
+              <div class="prob-bar-fill" style="width: ${event.bearishScenario.probability}%"></div>
+            </div>
+          </div>
+        </div>
 
-            if(!email || !password) {
-                alert("Please fill in both email and password fields.");
-                return;
-            }
+        <!-- Neutral Note -->
+        <div class="scenario-neutral">
+          <span class="neutral-icon">◆</span>
+          <div class="neutral-text">
+            <p class="lbl">Neutral / In-Line Scenario</p>
+            <p class="val">${event.neutralNote}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 
-            if(password.length < 6) {
-                alert("Password must be at least 6 characters long.");
-                return;
-            }
+  return card;
+}
 
-            try {
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email: email,
-                    password: password,
-                });
+function toggleEventCard(eventId) {
+  const card = document.querySelector(`[data-event-id="${eventId}"]`);
+  if (!card) return;
 
-                if (error) {
-                    alert("Registration Error: " + error.message);
-                } else {
-                    alert("Success! A verification link has been sent to your email. Please check your inbox or spam folder.");
-                    showLoginForm();
-                }
-            } catch (catchErr) {
-                alert("System Exception: " + catchErr.message);
-            }
-        }
+  const isExpanded = card.classList.contains('expanded');
+  const toggle = card.querySelector('.expand-toggle');
 
-        // Authentication: Sign In Process
-        async function handleLogin() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+  card.classList.toggle('expanded', !isExpanded);
+  toggle.setAttribute('aria-expanded', String(!isExpanded));
+}
 
-            if(!email || !password) {
-                alert("Please enter both your email and password.");
-                return;
-            }
+/* ============================================================
+   FILTERING LOGIC
+   ============================================================ */
+function applyFilters() {
+  // Collect active impact levels
+  const impacts = ['high', 'medium', 'low'].filter(level => {
+    return document.getElementById(`filter-${level}`)?.checked;
+  });
 
-            try {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password,
-                });
+  // Collect active markets
+  const markets = ['forex', 'gold', 'crypto'].filter(market => {
+    return document.getElementById(`market-${market}`)?.checked;
+  });
 
-                if (error) {
-                    alert("Login Failed: " + error.message);
-                } else {
-                    alert("Login Successful! Redirecting to dashboard...");
-                    window.location.href = "dashboard.html";
-                }
-            } catch (catchErr) {
-                alert("System Exception: " + catchErr.message);
-            }
-        }
-    </script>
+  AppState.activeFilters.impact = impacts;
+  AppState.activeFilters.markets = markets;
+
+  const filtered = AppState.allEvents.filter(event => {
+    const impactMatch = impacts.includes(event.impact);
+    const marketMatch = event.markets.some(m => markets.includes(m));
+    return impactMatch && marketMatch;
+  });
+
+  renderEvents(filtered);
+  updateStats(filtered);
+}
+
+function updateFilterCounts() {
+  const counts = { high: 0, medium: 0, low: 0 };
+  AppState.allEvents.forEach(ev => {
+    if (counts[ev.impact] !== undefined) counts[ev.impact]++;
+  });
+
+  document.getElementById('count-high').textContent = counts.high;
+  document.getElementById('count-medium').textContent = counts.medium;
+  document.getElementById('count-low').textContent = counts.low;
+}
+
+function updateStats(events) {
+  const highCount = events.filter(e => e.impact === 'high').length;
+  const bullishCount = events.filter(e => e.bullishScenario.probability > e.bearishScenario.probability).length;
+
+  document.getElementById('stat-total').textContent = events.length;
+  document.getElementById('stat-high').textContent = highCount;
+  document.getElementById('stat-bullish').textContent = bullishCount;
+}
+
+/* ============================================================
+   MOBILE SIDEBAR
+   ============================================================ */
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const isOpen = sidebar.classList.contains('open');
+
+  if (isOpen) {
+    closeSidebar();
+  } else {
+    sidebar.classList.add('open');
+    overlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+   ============================================================ */
+function showToast(message, type = 'info', duration = 4000) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+
+  const icon = { success: '✓', error: '✗', info: '◆' }[type] || '◆';
+
+  toast.innerHTML = `
+    <span style="font-family: var(--font-mono); font-size: 0.75rem; opacity: 0.7;">${icon}</span>
+    <span>${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('removing');
+    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+  }, duration);
+}
+
+/* ============================================================
+   UTILITY FUNCTIONS
+   ============================================================ */
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function extractNameFromEmail(email) {
+  const local = email.split('@')[0];
+  return local.charAt(0).toUpperCase() + local.slice(1).replace(/[._-]/g, ' ');
+}
+
+function simulateDelay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function formatDateLabel(label) {
+  const map = {
+    'TODAY': `Today — ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}`,
+    'TOMORROW': `Tomorrow — ${new Date(Date.now() + 86400000).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}`,
+    'THIS WEEK': 'Later This Week'
+  };
+  return map[label] || label;
+}
+
+/* ============================================================
+   SESSION RESTORATION (Supabase auth state)
+   ============================================================ */
+async function restoreSession() {
+  if (AppState.isDemoMode || !supabaseClient) return false;
+
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session && session.user) {
+      const user = session.user;
+      enterDashboard({
+        email: user.email,
+        name: user.user_metadata?.full_name || extractNameFromEmail(user.email)
+      });
+      return true;
+    }
+  } catch (err) {
+    console.error('[IntelliMarkets Lab] Session restoration failed:', err);
+  }
+  return false;
+}
+
+/* ============================================================
+   APPLICATION BOOTSTRAP
+   ============================================================ */
+async function init() {
+  console.info('[IntelliMarkets Lab] Application starting...');
+
+  const supabaseReady = initSupabase();
+  AppState.isDemoMode = !supabaseReady;
+
+  if (AppState.isDemoMode) {
+    console.info('[IntelliMarkets Lab] Running in demo mode. Configure Supabase credentials to enable live authentication.');
+  }
+
+  // Show auth view initially
+  showView('auth-view');
+
+  // Try to restore existing session
+  if (!AppState.isDemoMode) {
+    const restored = await restoreSession();
+    if (!restored) {
+      showView('auth-view');
+    }
+  }
+
+  // Handle keyboard events on nav items
+  document.querySelectorAll('.nav-item[role="button"]').forEach(item => {
+    item.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        item.click();
+      }
+    });
+  });
+
+  // Close sidebar on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeSidebar();
+  });
+
+  console.info('[IntelliMarkets Lab] Application initialized successfully.');
+}
+
+// Start the application once the DOM is ready
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
 </body>
 </html>
-
