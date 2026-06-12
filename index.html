@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliMarkets Lab - Secure Gateway</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1e1e2f 0%, #0f0f16 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 16px;
+            width: 400px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            color: #00ffcc;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #00ffcc;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #00ffcc;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #00ffcc;
+            border: none;
+            border-radius: 8px;
+            color: #0f0f16;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #00ccaa;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+        }
+
+        .toggle-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .toggle-text a {
+            color: #00ffcc;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .toggle-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hidden Class for switching */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">IntelliMarkets Lab</div>
+        <div class="subtitle">Pre-News Market Sentiment Engine</div>
+
+        <!-- LOGIN FORM -->
+        <div id="login-form">
+            <div class="form-group">
+                <label for="login-email">Email Address</label>
+                <input type="email" id="login-email" placeholder="enter your email">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="••••••••">
+            </div>
+            <button class="btn" onclick="handleLogin()">Sign In</button>
+            <div class="toggle-text">
+                New trader? <a onclick="toggleForms()">Create an Account</a>
+            </div>
+        </div>
+
+        <!-- SIGN UP FORM -->
+        <div id="signup-form" class="hidden">
+            <div class="form-group">
+                <label for="signup-name">Full Name</label>
+                <input type="text" id="signup-name" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label for="signup-email">Email Address</label>
+                <input type="email" id="signup-email" placeholder="yourname@example.com">
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Create Password</label>
+                <input type="password" id="signup-password" placeholder="Minimum 6 characters">
+            </div>
+            <button class="btn" onclick="handleSignUp()">Register & Verify</button>
+            <div class="toggle-text">
+                Already have an account? <a onclick="toggleForms()">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form toggle logic
+        function toggleForms() {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('signup-form').classList.toggle('hidden');
+        }
+
+        // Fake functions for now, next step mein isme Supabase/Firebase jodenge
+        function handleLogin() {
+            alert("Partner, abhi database nahi juda hai! Pehle frontend verify kar lo.");
+        }
+
+        function handleSignUp() {
+            alert("Registration successful! Verification email sent (Simulation).");
+        }
+    </script>
+</body>
+</html>
