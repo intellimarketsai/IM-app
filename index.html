@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- ========================================== -->
+    <!-- SEO & META TAGS (Google Ranking Ke Liye) -->
+    <!-- ========================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IntelliMarkets Lab - Secure Gateway</title>
+    <title>IntelliMarkets Lab - Pre-News Market Sentiment Engine</title>
+    <meta name="description" content="Get ahead of the market. IntelliMarkets Lab analyzes high-impact economic news events (CPI, FOMC, NFP) before they drop, giving traders the ultimate edge.">
+    <meta name="keywords" content="IntelliMarkets, trading news analysis, forex news predictor, CPI effect gold, FOMC trading strategy, market sentiment engine">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Tags (Social Media Link Sharing Ke Liye) -->
+    <meta property="og:title" content="IntelliMarkets Lab - Pre-News Sentiment Engine">
+    <meta property="og:description" content="Analyze high-impact economic data effects before the market moves. Secure your trader access now.">
+    <meta property="og:type" content="website">
+    <meta property="og:theme-color" content="#00ffcc">
+
+    <!-- SUPABASE LIBRARY -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         * {
             margin: 0;
@@ -114,13 +130,15 @@
             text-decoration: underline;
         }
 
-        /* Hidden Class for switching */
         .hidden {
             display: none;
         }
     </style>
 </head>
 <body>
+
+    <!-- SEO H1 Hidden Tag for Google Crawler (UI par nahi dikhega par SEO ke liye zaroori hai) -->
+    <h1 style="display:none;">IntelliMarkets Lab - Best Pre-News Trading Sentiment Engine</h1>
 
     <div class="container">
         <div class="logo">IntelliMarkets Lab</div>
@@ -130,7 +148,7 @@
         <div id="login-form">
             <div class="form-group">
                 <label for="login-email">Email Address</label>
-                <input type="email" id="login-email" placeholder="enter your email">
+                <input type="email" id="login-email" placeholder="enter your email" autocomplete="email">
             </div>
             <div class="form-group">
                 <label for="login-password">Password</label>
@@ -145,12 +163,8 @@
         <!-- SIGN UP FORM -->
         <div id="signup-form" class="hidden">
             <div class="form-group">
-                <label for="signup-name">Full Name</label>
-                <input type="text" id="signup-name" placeholder="John Doe">
-            </div>
-            <div class="form-group">
                 <label for="signup-email">Email Address</label>
-                <input type="email" id="signup-email" placeholder="yourname@example.com">
+                <input type="email" id="signup-email" placeholder="yourname@example.com" autocomplete="email">
             </div>
             <div class="form-group">
                 <label for="signup-password">Create Password</label>
@@ -164,20 +178,69 @@
     </div>
 
     <script>
+        // SUPABASE CONFIGURATION (Keys Injected Successfully)
+        const SUPABASE_URL = "https://mndqlkeqmkezbudmzqfl.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uZHFsa2VxbWtlemJ1ZG16cWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNTcwNzMsImV4cCI6MjA5NjgzMzA3M30.WhBsQCT8fMw-eAUwsthQAMtxOdhDzbZvPSTHgVjy2IQ";
+        
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (err) {
+            console.error("Supabase load failed:", err);
+        }
+
         // Form toggle logic
         function toggleForms() {
             document.getElementById('login-form').classList.toggle('hidden');
             document.getElementById('signup-form').classList.toggle('hidden');
         }
 
-        // Fake functions for now, next step mein isme Supabase/Firebase jodenge
-        function handleLogin() {
-            alert("Partner, abhi database nahi juda hai! Pehle frontend verify kar lo.");
+        // REAL SIGN UP FUNCTION
+        async function handleSignUp() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            if(!email || !password) {
+                alert("Bhai, email aur password dono fill karo!");
+                return;
+            }
+
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                alert("Error: " + error.message);
+            } else {
+                alert("🎉 Registration Successful! Bhai, apna Email Inbox/Spam check karo aur verification link par click karo!");
+                toggleForms();
+            }
         }
 
-        function handleSignUp() {
-            alert("Registration successful! Verification email sent (Simulation).");
+        // REAL LOGIN FUNCTION
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if(!email || !password) {
+                alert("Bhai, email aur password dono daalo!");
+                return;
+            }
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            });
+
+            if (error) {
+                alert("Login Failed: " + error.message);
+            } else {
+                // Verification successful hone par hi dashboard par bhejega
+                window.location.href = "dashboard.html";
+            }
         }
     </script>
 </body>
 </html>
+
