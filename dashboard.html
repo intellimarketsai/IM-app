@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliMarkets Lab - Trader Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0f0f16;
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: bold;
+            color: #00ffcc;
+            text-transform: uppercase;
+        }
+
+        .user-status {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .badge-verified {
+            background: rgba(0, 255, 204, 0.2);
+            color: #00ffcc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        /* FILTER SECTION */
+        .filter-container {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: #00ffcc;
+            color: #0f0f16;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+        }
+
+        /* DATA TABLE */
+        .table-wrapper {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.03);
+            color: #00ffcc;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .impact-high {
+            color: #ff4a4a;
+            font-weight: bold;
+        }
+
+        .impact-medium {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+
+        .sentiment-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-left: 3px solid #00ffcc;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">IntelliMarkets Lab</div>
+        <div class="user-status">Trader: <span style="color: #fff;">Akash</span> <span class="badge-verified">✓ Verified</span></div>
+    </header>
+
+    <!-- IMPACT FILTER BUTTONS -->
+    <div class="filter-container">
+        <span class="filter-label">News Impact Filter:</span>
+        <button class="filter-btn active" onclick="filterImpact('all', this)">All News</button>
+        <button class="filter-btn" onclick="filterImpact('High', this)">🔴 High Impact Only</button>
+        <button class="filter-btn" onclick="filterImpact('Medium', this)">🟡 Medium Impact</button>
+    </div>
+
+    <!-- DATA TABLE -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Time / Currency</th>
+                    <th style="width: 25%;">Economic Event</th>
+                    <th style="width: 15%;">Impact</th>
+                    <th style="width: 45%;">Gemini Pre-News AI Effect Analysis</th>
+                </tr>
+            </thead>
+            <tbody id="news-table-body">
+                <!-- Data Row 1 (High Impact Example) -->
+                <tr class="news-row" data-impact="High">
+                    <td>18:00<br><span style="color: #aaa;">USD</span></td>
+                    <td><strong>Core CPI (MoM)</strong></td>
+                    <td><span class="impact-high">🔴 High</span></td>
+                    <td>
+                        <div class="sentiment-box">
+                            <strong>Bullish Scenario:</strong> If CPI comes > 0.3%, DXY will spike, Gold (XAUUSD) might crash towards 2300.<br>
+                            <strong>Bearish Scenario:</strong> If CPI < 0.2%, Gold will blast upside targeting 2350+. Ready for high volatility.
+                        </div>
+                    </td>
+                </tr>
+                <!-- Data Row 2 (Medium Impact Example) -->
+                <tr class="news-row" data-impact="Medium">
+                    <td>20:15<br><span style="color: #aaa;">EUR</span></td>
+                    <td><strong>ECB President Lagarde Speaks</strong></td>
+                    <td><span class="impact-medium">🟡 Medium</span></td>
+                    <td>
+                        <div class="sentiment-box" style="border-left-color: #ffcc00;">
+                            Expected hawkish tone. EURUSD might see a short-term upside squeeze of 30-40 pips. Watch resistance at 1.08500.
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Frontend filtering logic
+        function filterImpact(level, button) {
+            // Active button style switch
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Show/Hide Rows based on data attribute
+            const rows = document.querySelectorAll('.news-row');
+            rows.forEach(row => {
+                const rowImpact = row.getAttribute('data-impact');
+                if (level === 'all' || rowImpact === level) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+On Fri, 12 Jun 2026, 15:47 Akash Kumar, <akashkumar06773208@gmail.com> wrote:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliMarkets Lab - Secure Gateway</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1e1e2f 0%, #0f0f16 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 16px;
+            width: 400px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            color: #00ffcc;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #00ffcc;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #00ffcc;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #00ffcc;
+            border: none;
+            border-radius: 8px;
+            color: #0f0f16;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #00ccaa;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+        }
+
+        .toggle-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .toggle-text a {
+            color: #00ffcc;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .toggle-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hidden Class for switching */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">IntelliMarkets Lab</div>
+        <div class="subtitle">Pre-News Market Sentiment Engine</div>
+
+        <!-- LOGIN FORM -->
+        <div id="login-form">
+            <div class="form-group">
+                <label for="login-email">Email Address</label>
+                <input type="email" id="login-email" placeholder="enter your email">
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="••••••••">
+            </div>
+            <button class="btn" onclick="handleLogin()">Sign In</button>
+            <div class="toggle-text">
+                New trader? <a onclick="toggleForms()">Create an Account</a>
+            </div>
+        </div>
+
+        <!-- SIGN UP FORM -->
+        <div id="signup-form" class="hidden">
+            <div class="form-group">
+                <label for="signup-name">Full Name</label>
+                <input type="text" id="signup-name" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label for="signup-email">Email Address</label>
+                <input type="email" id="signup-email" placeholder="yourname@example.com">
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Create Password</label>
+                <input type="password" id="signup-password" placeholder="Minimum 6 characters">
+            </div>
+            <button class="btn" onclick="handleSignUp()">Register & Verify</button>
+            <div class="toggle-text">
+                Already have an account? <a onclick="toggleForms()">Sign In</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form toggle logic
+        function toggleForms() {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('signup-form').classList.toggle('hidden');
+        }
+
+        // Fake functions for now, next step mein isme Supabase/Firebase jodenge
+        function handleLogin() {
+            alert("Partner, abhi database nahi juda hai! Pehle frontend verify kar lo.");
+        }
+
+        function handleSignUp() {
+            alert("Registration successful! Verification email sent (Simulation).");
+        }
+    </script>
+</body>
+</html>
+
