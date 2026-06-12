@@ -1,23 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ========================================== -->
-    <!-- SEO & META TAGS (Google Ranking Ke Liye) -->
-    <!-- ========================================== -->
+    <!-- ======================================================= -->
+    <!-- 🔒 MAXIMUM SEO OPTIMIZATION METRICS (Google & Social) -->
+    <!-- ======================================================= -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IntelliMarkets Lab - Pre-News Market Sentiment Engine</title>
-    <meta name="description" content="Get ahead of the market. IntelliMarkets Lab analyzes high-impact economic news events (CPI, FOMC, NFP) before they drop, giving traders the ultimate edge.">
-    <meta name="keywords" content="IntelliMarkets, trading news analysis, forex news predictor, CPI effect gold, FOMC trading strategy, market sentiment engine">
-    <meta name="robots" content="index, follow">
     
-    <!-- Open Graph Tags (Social Media Link Sharing Ke Liye) -->
-    <meta property="og:title" content="IntelliMarkets Lab - Pre-News Sentiment Engine">
-    <meta property="og:description" content="Analyze high-impact economic data effects before the market moves. Secure your trader access now.">
-    <meta property="og:type" content="website">
-    <meta property="og:theme-color" content="#00ffcc">
+    <!-- Standard Meta Tags -->
+    <meta name="description" content="Master Forex, Gold, and Crypto trading with IntelliMarkets Lab. Analyze high-impact economic news events like CPI, FOMC, and NFP before they hit the market using our advanced data engine.">
+    <meta name="keywords" content="IntelliMarkets Lab, intellimarkets, pre-news trading, forex news sentiment, CPI gold prediction, FOMC market effect, high impact news filter, trading data engine, market sentiment analysis">
+    <meta name="author" content="IntelliMarkets Lab">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://intellimarketsai.github.io/IM-app/">
 
-    <!-- SUPABASE LIBRARY -->
+    <!-- Open Graph / Facebook / WhatsApp Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://intellimarketsai.github.io/IM-app/">
+    <meta property="og:title" content="IntelliMarkets Lab - Pre-News Market Sentiment Engine">
+    <meta property="og:description" content="Stop guessing the news impact. Filter high-impact data and get precision pre-news sentiment analysis instantly. Secure your trader access.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200&auto=format&fit=crop">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://intellimarketsai.github.io/IM-app/">
+    <meta name="twitter:title" content="IntelliMarkets Lab - Pre-News Sentiment Engine">
+    <meta name="twitter:description" content="Filter high-impact economic events and master your trading setups before the numbers release.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1200&auto=format&fit=crop">
+    <meta name="theme-color" content="#00ffcc">
+
+    <!-- SUPABASE LIBRARY (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
@@ -120,25 +133,34 @@
             color: #aaa;
         }
 
-        .toggle-text a {
+        /* Pure button styled as a link to avoid browser selecting/blocking text */
+        .link-btn {
+            background: none;
+            border: none;
             color: #00ffcc;
-            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
             cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+            display: inline;
         }
 
-        .toggle-text a:hover {
-            text-decoration: underline;
+        .link-btn:hover {
+            color: #00ccaa;
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- SEO H1 Hidden Tag for Google Crawler (UI par nahi dikhega par SEO ke liye zaroori hai) -->
-    <h1 style="display:none;">IntelliMarkets Lab - Best Pre-News Trading Sentiment Engine</h1>
+    <!-- Hidden H1 for Absolute Google SEO Crawling Weightage -->
+    <h1 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
+        IntelliMarkets Lab - Elite Pre-News Trading Sentiment Engine & Market News Filter
+    </h1>
 
     <div class="container">
         <div class="logo">IntelliMarkets Lab</div>
@@ -148,15 +170,15 @@
         <div id="login-form">
             <div class="form-group">
                 <label for="login-email">Email Address</label>
-                <input type="email" id="login-email" placeholder="enter your email" autocomplete="email">
+                <input type="email" id="login-email" placeholder="enter your email">
             </div>
             <div class="form-group">
                 <label for="login-password">Password</label>
                 <input type="password" id="login-password" placeholder="••••••••">
             </div>
-            <button class="btn" onclick="handleLogin()">Sign In</button>
+            <button class="btn" type="button" onclick="handleLogin()">Sign In</button>
             <div class="toggle-text">
-                New trader? <a onclick="toggleForms()">Create an Account</a>
+                New trader? <button class="link-btn" type="button" onclick="toggleForms()">Create an Account</button>
             </div>
         </div>
 
@@ -164,106 +186,98 @@
         <div id="signup-form" class="hidden">
             <div class="form-group">
                 <label for="signup-email">Email Address</label>
-                <input type="email" id="signup-email" placeholder="yourname@example.com" autocomplete="email">
+                <input type="email" id="signup-email" placeholder="yourname@example.com">
             </div>
             <div class="form-group">
                 <label for="signup-password">Create Password</label>
                 <input type="password" id="signup-password" placeholder="Minimum 6 characters">
             </div>
-            <button class="btn" onclick="handleSignUp()">Register & Verify</button>
+            <button class="btn" type="button" onclick="handleSignUp()">Register & Verify</button>
             <div class="toggle-text">
-                Already have an account? <a onclick="toggleForms()">Sign In</a>
+                Already have an account? <button class="link-btn" type="button" onclick="toggleForms()">Sign In</button>
             </div>
         </div>
     </div>
 
     <script>
-        // SUPABASE CONFIGURATION
-const SUPABASE_URL = "https://mndqlkeqmkezbudmzqfl.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uZHFsa2VxbWtlemJ1ZG16cWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNTcwNzMsImV4cCI6MjA5NjgzMzA3M30.WhBsQCT8fMw-eAUwsthQAMtxOdhDzbZvPSTHgVjy2IQ";
-
-let supabase;
-
-// Check if library loaded correctly
-try {
-    if (window.supabase) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log("Supabase connected successfully!");
-    } else {
-        alert("Bhai, Supabase library internet se load nahi ho paayi. Page reload karo!");
-    }
-} catch (err) {
-    alert("Initialization Error: " + err.message);
-}
-
-// Form toggle logic
-function toggleForms() {
-    document.getElementById('login-form').classList.toggle('hidden');
-    document.getElementById('signup-form').classList.toggle('hidden');
-}
-
-// REAL SIGN UP FUNCTION
-async function handleSignUp() {
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-
-    if(!email || !password) {
-        alert("Bhai, email aur password dono fill karo!");
-        return;
-    }
-
-    if(password.length < 6) {
-        alert("Bhai, password kam se kam 6 characters ka hona chahiye!");
-        return;
-    }
-
-    try {
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-        });
-
-        if (error) {
-            alert("Supabase Error: " + error.message);
-        } else if (data.user && data.user.identities && data.user.identities.length === 0) {
-            alert("Bhai, yeh email pehle se registered hai! Sign In karne ka try karo.");
-        } else {
-            alert("🎉 Success! Email verification link bhej diya gaya hai. Apna Inbox aur SPAM folder check karo!");
-            toggleForms();
+        const SUPABASE_URL = "https://mndqlkeqmkezbudmzqfl.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1uZHFsa2VxbWtlemJ1ZG16cWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNTcwNzMsImV4cCI6MjA5NjgzMzA3M30.WhBsQCT8fMw-eAUwsthQAMtxOdhDzbZvPSTHgVjy2IQ";
+        
+        let supabase;
+        try {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log("Supabase Connection Initialized.");
+        } catch (err) {
+            console.error("Initialization Error: " + err.message);
         }
-    } catch (catchErr) {
-        alert("System Error: " + catchErr.message);
-    }
-}
 
-// REAL LOGIN FUNCTION
-async function handleLogin() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-
-    if(!email || !password) {
-        alert("Bhai, email aur password dono daalo!");
-        return;
-    }
-
-    try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
-
-        if (error) {
-            alert("Login Failed: " + error.message);
-        } else {
-            alert("Login Successful! Dashboard par chalte hain...");
-            window.location.href = "dashboard.html";
+        // Smooth Form Toggler
+        function toggleForms() {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            
+            if (loginForm.classList.contains('hidden')) {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+            }
         }
-    } catch (catchErr) {
-        alert("System Error: " + catchErr.message);
-    }
-}
 
+        // SUPABASE REAL SIGN UP FUNCTION WITH AUTO-EMAIL TRIGGER
+        async function handleSignUp() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
 
+            if(!email || !password) {
+                alert("Fill email & password!");
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) {
+                    alert("Supabase Error: " + error.message);
+                } else {
+                    alert("🎉 Success! Real-time verification link sent. Check your inbox and spam folder!");
+                    toggleForms();
+                }
+            } catch (catchErr) {
+                alert("System Error: " + catchErr.message);
+            }
+        }
+
+        // SUPABASE REAL LOGIN FUNCTION
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if(!email || !password) {
+                alert("Fill email & passowrd!");
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+
+                if (error) {
+                    alert("Login Failed: " + error.message);
+                } else {
+                    alert("Login Successful! ...");
+                    window.location.href = "dashboard.html";
+                }
+            } catch (catchErr) {
+                alert("System Error: " + catchErr.message);
+            }
+        }
     </script>
 </body>
 </html>
